@@ -20,11 +20,24 @@ FetchContent_Declare(
 )
 
 set(DPP_BUILD_TEST OFF CACHE BOOL "" FORCE)
-set(BUILD_VOICE_SUPPORT OFF CACHE BOOL "" FORCE)
+set(BUILD_VOICE_SUPPORT ON CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(DPP_USE_PCH ON CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(dpp)
+
+FetchContent_Declare(
+    whisper
+    GIT_REPOSITORY https://github.com/ggml-org/whisper.cpp.git
+    GIT_TAG        v1.7.4
+    GIT_SHALLOW    TRUE
+)
+
+set(WHISPER_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(WHISPER_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(WHISPER_BUILD_SERVER OFF CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(whisper)
 
 # OBJECT library ensures self-registering command TUs are not discarded by the linker
 add_library(bot_commands OBJECT
@@ -37,6 +50,8 @@ add_library(bot_commands OBJECT
     src/commands/setupcfxstatus.cpp
     src/commands/setupnews.cpp
     src/commands/removenews.cpp
+    src/commands/trollmic.cpp
+    src/commands/stoptroll.cpp
 )
 
 target_include_directories(bot_commands PRIVATE
@@ -56,7 +71,7 @@ target_include_directories(discord-bot PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
 )
 
-target_link_libraries(discord-bot PRIVATE dpp bot_commands)
+target_link_libraries(discord-bot PRIVATE dpp bot_commands whisper)
 
 if(MSVC)
     target_compile_options(discord-bot PRIVATE /W4 /permissive-)

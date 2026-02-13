@@ -6,7 +6,10 @@
 #include "bot/presence.hpp"
 #include "bot/sticky.hpp"
 #include "bot/strings.hpp"
+#include "bot/trollmic.hpp"
+#include "bot/voice_trigger.hpp"
 
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -26,10 +29,38 @@ int main() {
         return 1;
     }
 
-    dpp::cluster bot(token, dpp::i_guilds | dpp::i_guild_messages | dpp::i_message_content);
+    dpp::cluster bot(token, dpp::i_guilds | dpp::i_guild_messages | dpp::i_message_content | dpp::i_guild_voice_states);
 
     bot::CommandRouter commands;
     commands.load_all();
+
+    const char* whisper_model = std::getenv("WHISPER_MODEL_PATH");
+    if (whisper_model) {
+        auto& vt = bot::VoiceTrigger::instance();
+        if (vt.init(whisper_model, [&bot](uint64_t guild_id) {
+            std::cout << bot::strings::cmd::voicetrigger::triggered;
+
+            auto& troll = bot::TrollMic::instance();
+            auto session = troll.get(guild_id);
+            if (!session) return;
+
+            if (session->is_muted) {
+                dpp::guild_member gm;
+                gm.guild_id = guild_id;
+                gm.user_id = session->target_id;
+                gm.set_mute(false);
+                bot.guild_edit_member(gm);
+            }
+
+            troll.remove(guild_id);
+            if (auto* shard = bot.get_shard(0)) shard->disconnect_voice(guild_id);
+            bot::VoiceTrigger::instance().clear_buffer(guild_id);
+        })) {
+            std::cout << bot::strings::cmd::voicetrigger::model_loaded;
+        }
+    } else {
+        std::cerr << bot::strings::cmd::voicetrigger::model_missing;
+    }
 
     bot.on_ready([&bot, &commands](const dpp::ready_t&) {
         std::cout << bot::strings::log::online << bot.me.username << " ("
@@ -73,6 +104,53 @@ int main() {
             std::cout << "[DPP] " << event.message << "\n";
         }
     });
+
+    bot.on_voice_receive([&bot](const dpp::voice_receive_t& event) {
+        auto guild_id = event.voice_client->server_id;
+        auto& troll = bot::TrollMic::instance();
+        auto session = troll.get(guild_id);
+        if (!session) return;
+
+        if (!event.audio_data.empty()) {
+            bot::VoiceTrigger::instance().feed_audio(
+                guild_id, event.audio_data.data(), event.audio_data.size());
+        }
+
+        if (event.user_id != session->target_id) return;
+
+        troll.touch_voice(guild_id);
+
+        if (!session->is_muted) {
+            troll.set_muted(guild_id, true);
+            dpp::guild_member gm;
+            gm.guild_id = guild_id;
+            gm.user_id = session->target_id;
+            gm.set_mute(true);
+            bot.guild_edit_member(gm);
+        }
+    });
+
+    bot.start_timer([&bot](dpp::timer) {
+        auto& troll = bot::TrollMic::instance();
+        auto now = std::chrono::steady_clock::now();
+
+        troll.for_each([&](uint64_t guild_id, bot::TrollSession& session) {
+            if (!session.is_muted) return;
+            if (session.last_voice_packet.time_since_epoch().count() == 0) return;
+
+            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                now - session.last_voice_packet).count();
+
+            if (elapsed > 500) {
+                session.is_muted = false;
+                dpp::guild_member gm;
+                gm.guild_id = guild_id;
+                gm.user_id = session.target_id;
+                gm.set_mute(false);
+                bot.guild_edit_member(gm);
+            }
+        });
+    }, 1);
 
     std::cout << bot::strings::log::starting;
     bot.start(dpp::st_wait);

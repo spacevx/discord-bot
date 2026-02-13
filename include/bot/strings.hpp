@@ -69,6 +69,28 @@ namespace cmd {
         constexpr auto status_down      = ":x:";
     }
 
+    namespace trollmic {
+        constexpr auto description      = "Troller le micro d'un membre";
+        constexpr auto opt_target       = "La cible a troller";
+        constexpr auto no_permission    = "Vous n'avez pas la permission de mute des membres.";
+        constexpr auto not_in_voice     = "Vous devez etre dans un salon vocal.";
+        constexpr auto success          = "Troll active sur <@{}>.";
+        constexpr auto already_active   = "Un troll est deja actif dans ce serveur.";
+    }
+
+    namespace stoptroll {
+        constexpr auto description      = "Arreter le troll micro";
+        constexpr auto no_permission    = "Vous n'avez pas la permission.";
+        constexpr auto success          = "Troll desactive.";
+        constexpr auto not_active       = "Aucun troll actif dans ce serveur.";
+    }
+
+    namespace voicetrigger {
+        constexpr auto model_missing    = "WHISPER_MODEL_PATH non defini, declencheur vocal desactive.\n";
+        constexpr auto model_loaded     = "Modele Whisper charge.\n";
+        constexpr auto triggered        = "Declencheur vocal detecte, troll desactive.\n";
+    }
+
     namespace news {
         constexpr auto setup_description    = "Configurer un flux d'actualites dans ce salon";
         constexpr auto setup_opt_category   = "La categorie d'actualites a suivre";
