@@ -35,6 +35,8 @@ add_library(bot_commands OBJECT
     src/commands/sticky.cpp
     src/commands/unsticky.cpp
     src/commands/setupcfxstatus.cpp
+    src/commands/setupnews.cpp
+    src/commands/removenews.cpp
 )
 
 target_include_directories(bot_commands PRIVATE
@@ -47,6 +49,7 @@ add_executable(discord-bot
     src/main.cpp
     src/bot/command_router.cpp
     src/bot/cfx_status.cpp
+    src/bot/news.cpp
 )
 
 target_include_directories(discord-bot PRIVATE

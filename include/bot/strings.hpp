@@ -68,6 +68,29 @@ namespace cmd {
         constexpr auto status_up        = ":white_check_mark:";
         constexpr auto status_down      = ":x:";
     }
+
+    namespace news {
+        constexpr auto setup_description    = "Configurer un flux d'actualites dans ce salon";
+        constexpr auto setup_opt_category   = "La categorie d'actualites a suivre";
+        constexpr auto setup_no_permission  = "Vous n'avez pas la permission de configurer les actualites.";
+        constexpr auto setup_success        = "Flux d'actualites '{}' configure dans ce salon.";
+        constexpr auto remove_description   = "Retirer un flux d'actualites de ce salon";
+        constexpr auto remove_opt_category  = "La categorie d'actualites a retirer";
+        constexpr auto remove_no_permission = "Vous n'avez pas la permission de retirer les actualites.";
+        constexpr auto remove_success       = "Flux d'actualites '{}' retire de ce salon.";
+        constexpr auto remove_not_found     = "Ce salon n'est pas abonne au flux '{}'.";
+        constexpr auto source               = "Source";
+
+        constexpr auto cat_palestine    = "Palestine / Conflit";
+        constexpr auto cat_usa          = "USA";
+        constexpr auto cat_trump        = "Trump";
+        constexpr auto cat_musk         = "Elon Musk";
+        constexpr auto cat_iran         = "Iran";
+        constexpr auto cat_epstein      = "Epstein";
+        constexpr auto cat_monde        = "Monde";
+        constexpr auto cat_freegames    = "Jeux Gratuits";
+        constexpr auto cat_cybersec     = "Cybersecurite / Darknet";
+    }
 }
 
 } // namespace bot::strings
