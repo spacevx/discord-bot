@@ -32,6 +32,8 @@ add_library(bot_commands OBJECT
     src/commands/info.cpp
     src/commands/kick.cpp
     src/commands/ban.cpp
+    src/commands/sticky.cpp
+    src/commands/unsticky.cpp
 )
 
 target_include_directories(bot_commands PRIVATE

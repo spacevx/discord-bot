@@ -43,6 +43,20 @@ namespace cmd {
         constexpr auto success          = "Banni <@{}>.";
         constexpr auto failure          = "Impossible de bannir <@{}> : {}";
     }
+
+    namespace sticky {
+        constexpr auto description      = "Epingler un message en bas du salon";
+        constexpr auto opt_message      = "Le contenu du message a epingler";
+        constexpr auto no_permission    = "Vous n'avez pas la permission de gerer les messages.";
+        constexpr auto success          = "Message epingle dans ce salon.";
+    }
+
+    namespace unsticky {
+        constexpr auto description      = "Retirer le message epingle du salon";
+        constexpr auto no_permission    = "Vous n'avez pas la permission de gerer les messages.";
+        constexpr auto success          = "Message epingle retire.";
+        constexpr auto not_found        = "Aucun message epingle dans ce salon.";
+    }
 }
 
 } // namespace bot::strings
