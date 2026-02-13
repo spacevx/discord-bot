@@ -1,6 +1,8 @@
 #include <dpp/dpp.h>
 
+#include "bot/cfx_status.hpp"
 #include "bot/command_router.hpp"
+#include "bot/presence.hpp"
 #include "bot/sticky.hpp"
 #include "bot/strings.hpp"
 
@@ -34,6 +36,8 @@ int main() {
 
         if (dpp::run_once<struct register_commands>()) {
             commands.register_commands(bot);
+            bot::CfxStatus::instance().start_polling(bot);
+            bot::start_presence_animation(bot);
         }
     });
 

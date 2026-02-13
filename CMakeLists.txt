@@ -34,6 +34,7 @@ add_library(bot_commands OBJECT
     src/commands/ban.cpp
     src/commands/sticky.cpp
     src/commands/unsticky.cpp
+    src/commands/setupcfxstatus.cpp
 )
 
 target_include_directories(bot_commands PRIVATE
@@ -45,6 +46,7 @@ target_link_libraries(bot_commands PRIVATE dpp)
 add_executable(discord-bot
     src/main.cpp
     src/bot/command_router.cpp
+    src/bot/cfx_status.cpp
 )
 
 target_include_directories(discord-bot PRIVATE

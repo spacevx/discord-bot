@@ -57,6 +57,17 @@ namespace cmd {
         constexpr auto success          = "Message epingle retire.";
         constexpr auto not_found        = "Aucun message epingle dans ce salon.";
     }
+
+    namespace cfxstatus {
+        constexpr auto description      = "Configurer le suivi du statut CFX.re";
+        constexpr auto no_permission    = "Vous n'avez pas la permission de configurer le suivi.";
+        constexpr auto success          = "Suivi du statut CFX.re configure dans ce salon.";
+        constexpr auto embed_title      = "Statut CFX.re";
+        constexpr auto embed_footer     = "Derniere mise a jour";
+        constexpr auto no_incidents     = ":white_check_mark: Aucun incident recent.";
+        constexpr auto status_up        = ":white_check_mark:";
+        constexpr auto status_down      = ":x:";
+    }
 }
 
 } // namespace bot::strings
